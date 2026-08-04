@@ -39,8 +39,7 @@
       "emailLabel": "Email address",
       "emailPlaceholder": "you@company.com",
       "passwordLabel": "Password",
-      "submitSeller": "Sign in as Seller",
-      "submitAdmin": "Sign in as Administrator",
+      "submit": "Sign in",
       "noAccount": "Don't have an account?",
       "createAccount": "Create one"
     },

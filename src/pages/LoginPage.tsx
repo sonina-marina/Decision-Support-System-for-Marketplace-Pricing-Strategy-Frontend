@@ -3,8 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthLayout } from '../components/layout/AuthLayout';
 import { TextField } from '../components/ui/TextField';
-
-type Role = 'seller' | 'administrator';
+import { authService } from '../services/auth';
 
 export default function LoginPage() {
   const { t } = useTranslation();
@@ -13,7 +12,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
-  const [submittingAs, setSubmittingAs] = useState<Role | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   function validate(): boolean {
     const next: typeof errors = {};
@@ -24,17 +23,18 @@ export default function LoginPage() {
     return Object.keys(next).length === 0;
   }
 
-  async function handleSubmit(e: FormEvent, role: Role) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (!validate()) return;
 
-    setSubmittingAs(role);
+    setSubmitting(true);
     try {
-      // TODO: заменить на реальный вызов из services/auth
-      // await authService.signIn({ email, password, role });
+      await authService.login({ email, password });
       navigate('/dashboard');
+    } catch {
+      setErrors({ password: 'Неверный email или пароль' });
     } finally {
-      setSubmittingAs(null);
+      setSubmitting(false);
     }
   }
 
@@ -43,7 +43,7 @@ export default function LoginPage() {
       <h2 className="mb-1.5 text-2xl font-bold text-text-primary">{t('auth.signIn.title')}</h2>
       <p className="mb-8 text-sm text-text-secondary">{t('auth.signIn.subtitle')}</p>
 
-      <form onSubmit={(e) => handleSubmit(e, 'seller')} noValidate>
+      <form onSubmit={handleSubmit} noValidate>
         <TextField
           label={t('auth.signIn.emailLabel')}
           name="email"
@@ -66,20 +66,11 @@ export default function LoginPage() {
 
         <button
           type="submit"
-          disabled={submittingAs !== null}
-          className="mb-3 w-full rounded-lg bg-accent px-4 py-3 text-[15px] font-semibold text-accent-foreground
+          disabled={submitting}
+          className="w-full rounded-lg bg-accent px-4 py-3 text-[15px] font-semibold text-accent-foreground
             transition-colors hover:bg-accent-hover disabled:opacity-60"
         >
-          {submittingAs === 'seller' ? t('common.loading') : t('auth.signIn.submitSeller')}
-        </button>
-        <button
-          type="button"
-          disabled={submittingAs !== null}
-          onClick={(e) => handleSubmit(e, 'administrator')}
-          className="w-full rounded-lg border border-border bg-bg px-4 py-3 text-[15px] font-medium text-text-primary
-            transition-colors hover:bg-bg-elevated disabled:opacity-60"
-        >
-          {submittingAs === 'administrator' ? t('common.loading') : t('auth.signIn.submitAdmin')}
+          {submitting ? t('common.loading') : t('auth.signIn.submit')}
         </button>
       </form>
 

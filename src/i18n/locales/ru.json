@@ -39,8 +39,7 @@
       "emailLabel": "Email",
       "emailPlaceholder": "you@company.com",
       "passwordLabel": "Пароль",
-      "submitSeller": "Войти как продавец",
-      "submitAdmin": "Войти как администратор",
+      "submit": "Войти",
       "noAccount": "Нет аккаунта?",
       "createAccount": "Создать"
     },
