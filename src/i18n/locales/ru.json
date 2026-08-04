@@ -1,0 +1,107 @@
+{
+  "app": {
+    "name": "PriceLens"
+  },
+  "theme": {
+    "switchToLight": "Переключить на светлую тему",
+    "switchToDark": "Переключить на тёмную тему"
+  },
+  "language": {
+    "label": "Язык"
+  },
+  "nav": {
+    "dashboard": "Дашборд",
+    "products": "Товары",
+    "unitEconomics": "Юнит-экономика",
+    "scenarios": "Сценарии",
+    "reports": "Отчёты",
+    "signOut": "Выйти"
+  },
+  "role": {
+    "seller": "Продавец",
+    "administrator": "Администратор"
+  },
+  "auth": {
+    "eyebrow": "Система поддержки решений",
+    "heroLine1": "Ценообразование",
+    "heroLine2": "с уверенностью.",
+    "heroSubtitle": "Моделируйте сценарии ценообразования, считайте юнит-экономику и находите риски маржи — до того, как они ударят по прибыли.",
+    "stats": {
+      "marginLift": "Средний прирост маржи\nпосле моделирования сценариев",
+      "productsTracked": "Товаров отслеживается\nу всех продавцов",
+      "calcsPerSession": "Расчётов за сессию\nв среднем на пользователя",
+      "riskFlags": "Риск-флагов найдено\nдо публикации listing'а"
+    },
+    "footerNote": "Демо-среда · Реальные данные не сохраняются",
+    "signIn": {
+      "title": "Вход",
+      "subtitle": "Введите данные, чтобы продолжить",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@company.com",
+      "passwordLabel": "Пароль",
+      "submitSeller": "Войти как продавец",
+      "submitAdmin": "Войти как администратор",
+      "noAccount": "Нет аккаунта?",
+      "createAccount": "Создать"
+    },
+    "signUp": {
+      "title": "Регистрация",
+      "subtitle": "Начните ценообразование с уверенностью за пару минут",
+      "nameLabel": "Полное имя",
+      "namePlaceholder": "Мария Чен",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@company.com",
+      "passwordLabel": "Пароль",
+      "confirmPasswordLabel": "Повторите пароль",
+      "submit": "Создать аккаунт",
+      "haveAccount": "Уже есть аккаунт?",
+      "signIn": "Войти"
+    },
+    "errors": {
+      "required": "Обязательное поле",
+      "invalidEmail": "Введите корректный email",
+      "passwordTooShort": "Пароль должен быть не короче 8 символов",
+      "passwordMismatch": "Пароли не совпадают"
+    }
+  },
+  "products": {
+    "title": "Товары",
+    "shownCount": "Показано {{shown}} из {{total}}",
+    "addProduct": "Добавить товар",
+    "searchPlaceholder": "Поиск по названию или артикулу...",
+    "filters": {
+      "all": "Все",
+      "active": "Активные",
+      "archived": "Архив"
+    },
+    "table": {
+      "product": "Товар",
+      "price": "Цена",
+      "cogs": "Себестоимость",
+      "commission": "Комиссия",
+      "advertising": "Реклама",
+      "margin": "Маржа",
+      "netProfit": "Чистая прибыль",
+      "breakEven": "Точка безубыт."
+    },
+    "empty": {
+      "title": "Товаров пока нет",
+      "subtitle": "Добавьте первый товар, чтобы начать моделировать маржу.",
+      "cta": "Добавить товар"
+    }
+  },
+  "common": {
+    "cancel": "Отмена",
+    "save": "Сохранить",
+    "loading": "Загрузка..."
+  },
+  "titles": {
+    "dashboard": "",
+    "products": "Товары",
+    "product": "Информация о товаре",
+    "unit_economics": "Калькулятор юнит-экономики",
+    "scenarios": "Сценарии развития",
+    "reports": "Отчеты",
+    "not_found": "Страница не найдена"
+  }
+}

@@ -1,0 +1,55 @@
+import type { Product } from '../types/product';
+
+// TODO: заменить на вызов services/products.ts, когда появится реальный API.
+export const MOCK_PRODUCTS: Product[] = [
+  {
+    id: '1',
+    sku: 'WEM-2400',
+    name: 'Wireless Ergonomic Mouse',
+    price: 54.99,
+    cogs: 18.5,
+    commissionPct: 12,
+    advertising: 6.5,
+    status: 'active',
+  },
+  {
+    id: '2',
+    sku: 'BDO-550',
+    name: 'Bamboo Desk Organizer Set',
+    price: 32.99,
+    cogs: 9.8,
+    commissionPct: 10,
+    advertising: 3.2,
+    status: 'active',
+  },
+  {
+    id: '3',
+    sku: 'SCM-110',
+    name: 'Silicone Cable Management Kit',
+    price: 14.99,
+    cogs: 3.2,
+    commissionPct: 15,
+    advertising: 2.8,
+    status: 'active',
+  },
+  {
+    id: '4',
+    sku: 'LRL-1000',
+    name: 'LED Ring Light 10-inch',
+    price: 38.5,
+    cogs: 16.4,
+    commissionPct: 12,
+    advertising: 9.4,
+    status: 'active',
+  },
+  {
+    id: '5',
+    sku: 'MPM-300',
+    name: 'Magnetic Phone Mount Pro',
+    price: 22.99,
+    cogs: 7.1,
+    commissionPct: 13,
+    advertising: 4.1,
+    status: 'active',
+  },
+];
