@@ -102,5 +102,26 @@
     "scenarios": "Scenarios",
     "reports": "Reports",
     "not_found": "Page Not Found"
+  },
+  "stores": {
+    "title": "Stores & Products",
+    "addStore": "Add Store",
+    "newStoreNamePlaceholder": "Store name",
+    "create": "Create",
+    "productsCount": "{{count}} products",
+    "empty": {
+      "title": "No stores yet",
+      "subtitle": "Create your first store to start adding products.",
+      "cta": "Create Store"
+    },
+    "loadError": "Failed to load stores",
+    "table": {
+      "itemNumber": "Item #",
+      "name": "Name",
+      "category": "Category",
+      "price": "Price"
+    },
+    "addProduct": "Add Product",
+    "noProducts": "No products in this store yet"
   }
 }

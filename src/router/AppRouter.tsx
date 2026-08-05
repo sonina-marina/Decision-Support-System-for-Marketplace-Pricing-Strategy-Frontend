@@ -12,7 +12,7 @@ import MainLayout from "../components/layout/MainLayout";
 
 import { ROUTES } from "./routes";
 import CalculatorPage from "../pages/CalculatorPage";
-
+import { ProtectedRoute } from "../components/routing/ProtectedRoute";
 
 export default function AppRouter() {
     return (
@@ -21,17 +21,18 @@ export default function AppRouter() {
                 path="/"
                 element={<Navigate to={ROUTES.DASHBOARD} replace />}
             />
-
             <Route path={ROUTES.LOGIN} element={<LoginPage />} />
             <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
 
-            <Route element={<MainLayout />}>                
-                <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
-                <Route path={ROUTES.PRODUCTS} element={<ProductsPage />} />
-                <Route path={ROUTES.PRODUCT} element={<ProductPage />} />
-                <Route path={ROUTES.CALCULATOR} element={<CalculatorPage />} />
-                <Route path={ROUTES.SCENARIOS} element={<ScenariosPage />} />
-                <Route path={ROUTES.REPORTS} element={<ReportsPage />} />
+            <Route element={<ProtectedRoute />}>
+                <Route element={<MainLayout />}>                
+                    <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
+                    <Route path={ROUTES.PRODUCTS} element={<ProductsPage />} />
+                    <Route path={ROUTES.PRODUCT} element={<ProductPage />} />
+                    <Route path={ROUTES.CALCULATOR} element={<CalculatorPage />} />
+                    <Route path={ROUTES.SCENARIOS} element={<ScenariosPage />} />
+                    <Route path={ROUTES.REPORTS} element={<ReportsPage />} />
+                </Route>
             </Route>
 
             <Route path="*" element={<NotFoundPage />} />

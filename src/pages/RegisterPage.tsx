@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthLayout } from '../components/layout/AuthLayout';
 import { TextField } from '../components/ui/TextField';
+import { usersService } from '../services/users';
+import { useAuth } from '../context/AuthContext';
 
 interface FormState {
   name: string;
@@ -11,13 +13,14 @@ interface FormState {
   confirmPassword: string;
 }
 
-type FormErrors = Partial<Record<keyof FormState, string>>;
+type FormErrors = Partial<Record<keyof FormState, string>> & { general?: string };
 
 const INITIAL_STATE: FormState = { name: '', email: '', password: '', confirmPassword: '' };
 
 export default function RegisterPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const [form, setForm] = useState<FormState>(INITIAL_STATE);
   const [errors, setErrors] = useState<FormErrors>({});
@@ -46,9 +49,20 @@ export default function RegisterPage() {
 
     setSubmitting(true);
     try {
-      // TODO: заменить на реальный вызов из services/auth
-      // await authService.signUp(form);
+      await usersService.create({
+        email: form.email,
+        fullname: form.name,
+        password: form.password,
+        role: 'SELLER',
+      });
+
+      await login({ email: form.email, password: form.password });
       navigate('/dashboard');
+    } catch {
+      setErrors((prev) => ({
+        ...prev,
+        general: 'Не удалось создать аккаунт. Возможно, такой email уже занят.',
+      }));
     } finally {
       setSubmitting(false);
     }
@@ -97,6 +111,8 @@ export default function RegisterPage() {
           error={errors.confirmPassword}
           autoComplete="new-password"
         />
+
+        {errors.general && <p className="mb-4 text-sm text-danger">{errors.general}</p>}
 
         <button
           type="submit"

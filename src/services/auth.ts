@@ -12,7 +12,7 @@ interface TokenPayload {
 
 export const authService = {
   async login(credentials: LoginRequest): Promise<void> {
-    const { access_token } = await apiRequest<LoginResponse>('/login/', {
+    const { access_token } = await apiRequest<LoginResponse>('/api/v1/login/', {
       method: 'POST',
       body: credentials,
     });
@@ -32,6 +32,17 @@ export const authService = {
     if (!token) return null;
     try {
       return decodeJwtPayload<TokenPayload>(token).role ?? null;
+    } catch {
+      return null;
+    }
+  },
+
+  getUserId(): number | null {
+    const token = localStorage.getItem(TOKEN_KEY);
+    if (!token) return null;
+    try {
+      const sub = decodeJwtPayload<TokenPayload>(token).sub;
+      return sub !== undefined ? Number(sub) : null;
     } catch {
       return null;
     }

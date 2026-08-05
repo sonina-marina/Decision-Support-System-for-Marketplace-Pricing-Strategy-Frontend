@@ -8,22 +8,26 @@ import {
   Activity,
   BarChart3,
   LogOut,
-  Calculator,
-  FolderKanban,
 } from 'lucide-react';
+import type { UserView } from '../../types/user';
 
 interface SidebarProps {
-  user: { name: string; email: string; role: 'seller' | 'administrator' };
+  user: UserView;
   onSignOut: () => void;
 }
 
 const NAV_ITEMS = [
   { to: '/dashboard', icon: LayoutGrid, key: 'dashboard' },
-  { to: '/products', icon: FolderKanban, key: 'products' },
-  { to: '/calculator', icon: Calculator, key: 'unitEconomics' },
-  { to: '/scenarios', icon: BarChart3, key: 'scenarios' },
-  { to: '/reports', icon: FileText, key: 'reports' },
+  { to: '/products', icon: Hexagon, key: 'products' },
+  { to: '/calculator', icon: FileText, key: 'unitEconomics' },
+  { to: '/scenarios', icon: Activity, key: 'scenarios' },
+  { to: '/reports', icon: BarChart3, key: 'reports' },
 ] as const;
+
+const ROLE_LABEL_KEY = {
+  ADMIN: 'administrator',
+  SELLER: 'seller',
+} as const;
 
 export function Sidebar({ user, onSignOut }: SidebarProps) {
   const { t } = useTranslation();
@@ -41,7 +45,7 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
       {/* Роль */}
       <div className="mb-6 px-1">
         <span className="inline-block rounded-md border border-accent/30 bg-accent-soft px-2.5 py-1 font-data text-[11px] font-medium uppercase tracking-wider text-accent">
-          {t(`role.${user.role}`)}
+          {t(`role.${ROLE_LABEL_KEY[user.role]}`)}
         </span>
       </div>
 
@@ -69,10 +73,10 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
       <div className="mt-4 border-t border-border pt-4">
         <div className="mb-1 flex items-center gap-3 rounded-lg px-1 py-2">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent-soft font-data text-sm font-semibold text-accent">
-            {user.name.charAt(0).toUpperCase()}
+            {user.fullname.charAt(0).toUpperCase()}
           </div>
           <div className="min-w-0">
-            <p className="truncate text-sm font-medium text-text-primary">{user.name}</p>
+            <p className="truncate text-sm font-medium text-text-primary">{user.fullname}</p>
             <p className="truncate text-xs text-text-muted">{user.email}</p>
           </div>
         </div>
@@ -88,3 +92,4 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
     </aside>
   );
 }
+

@@ -3,11 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthLayout } from '../components/layout/AuthLayout';
 import { TextField } from '../components/ui/TextField';
-import { authService } from '../services/auth';
+import { useAuth } from '../context/AuthContext';
 
 export default function LoginPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -29,7 +30,7 @@ export default function LoginPage() {
 
     setSubmitting(true);
     try {
-      await authService.login({ email, password });
+      await login({ email, password });
       navigate('/dashboard');
     } catch {
       setErrors({ password: 'Неверный email или пароль' });
