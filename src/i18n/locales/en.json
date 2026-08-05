@@ -87,6 +87,31 @@
       "title": "No products yet",
       "subtitle": "Add your first product to start modeling margins.",
       "cta": "Add Product"
+    },
+    "productForm": {
+      "name": "Name",
+      "category": "Category",
+      "itemNumber": "Item Number",
+      "price": "Price",
+      "cogs": "Сost of Goods Sold",
+      "commission": "Commission (%)",
+      "showAdvanced": "Show other fields (for calculationg metrics)",
+      "hideAdvanced": "Hide other fields",
+      "acquiring": "Acquire (%)",
+      "tax": "Tax (%)",
+      "views": "Views",
+      "targetActions": "Target Actions",
+      "buyers": "Byers",
+      "adCosts": "Advertisment Costs",
+      "inboundLogistic": "Inbound Logistic",
+      "directLogistic": "Direct Logistic",
+      "reverseLogistic": "Reverse Logistic",
+      "returnRate": "Return Rate (%)",
+      "defectRate": "Defect Rate (%)",
+      "avgStorage": "Average Cost of Storage",
+      "avgPackaging": "Average Cost of Packeging",
+      "sales": "Sales",
+      "creationError": "The product could not be created. Check the words and try again."
     }
   },
   "common": {

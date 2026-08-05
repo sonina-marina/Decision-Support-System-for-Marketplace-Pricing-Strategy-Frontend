@@ -6,11 +6,11 @@ import { productsService } from '../services/products';
 import type { StoreView } from '../types/store';
 import type { ProductView } from '../types/product';
 import { useAuth } from '../context/AuthContext';
+import { AddProductModal } from '../components/products/AddProductModal';
 
 const currency = (n: number) =>
   n.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 
-// Кэш товаров по магазину — чтобы повторное открытие не грузило заново.
 type ProductsByStore = Record<number, { status: 'loading' | 'loaded' | 'error'; items: ProductView[] }>;
 
 export default function ProductsPage() {
@@ -26,6 +26,8 @@ export default function ProductsPage() {
   const [isCreatingStore, setIsCreatingStore] = useState(false);
   const [newStoreName, setNewStoreName] = useState('');
   const [savingStore, setSavingStore] = useState(false);
+
+  const [addProductStoreId, setAddProductStoreId] = useState<number | null>(null);
 
   async function loadStores() {
     setLoading(true);
@@ -45,8 +47,8 @@ export default function ProductsPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function loadProductsForStore(storeId: number) {
-    if (productsByStore[storeId]) return; 
+  async function loadProductsForStore(storeId: number, force = false) {
+    if (productsByStore[storeId] && !force) return;
 
     setProductsByStore((prev) => ({ ...prev, [storeId]: { status: 'loading', items: [] } }));
     try {
@@ -135,9 +137,18 @@ export default function ProductsPage() {
               isOpen={openStoreId === store.id}
               onToggle={() => toggleStore(store.id)}
               productsState={productsByStore[store.id]}
+              onAddProduct={() => setAddProductStoreId(store.id)}
             />
           ))}
         </div>
+      )}
+
+      {addProductStoreId !== null && (
+        <AddProductModal
+          storeId={addProductStoreId}
+          onClose={() => setAddProductStoreId(null)}
+          onCreated={() => loadProductsForStore(addProductStoreId, true)}
+        />
       )}
     </div>
   );
@@ -148,11 +159,13 @@ function StoreAccordionItem({
   isOpen,
   onToggle,
   productsState,
+  onAddProduct,
 }: {
   store: StoreView;
   isOpen: boolean;
   onToggle: () => void;
   productsState?: { status: 'loading' | 'loaded' | 'error'; items: ProductView[] };
+  onAddProduct: () => void;
 }) {
   const { t } = useTranslation();
 
@@ -192,7 +205,7 @@ function StoreAccordionItem({
             <div className="flex flex-col items-center gap-3 px-6 py-10 text-center">
               <Package size={20} className="text-text-muted" />
               <p className="text-sm text-text-muted">{t('stores.noProducts')}</p>
-              <AddProductButton />
+              <AddProductButton onClick={onAddProduct} />
             </div>
           ) : (
             <>
@@ -221,7 +234,7 @@ function StoreAccordionItem({
                 </table>
               </div>
               <div className="border-t border-border-subtle px-6 py-3">
-                <AddProductButton />
+                <AddProductButton onClick={onAddProduct} />
               </div>
             </>
           )}
@@ -231,12 +244,12 @@ function StoreAccordionItem({
   );
 }
 
-function AddProductButton() {
+function AddProductButton({ onClick }: { onClick: () => void }) {
   const { t } = useTranslation();
   return (
     <button
       type="button"
-      // TODO: открыть модалку "вручную / из Excel / копия существующего"
+      onClick={onClick}
       className="flex items-center gap-2 rounded-lg border border-border px-3.5 py-2 text-sm
         text-text-secondary transition-colors hover:border-accent/40 hover:text-accent"
     >
@@ -267,3 +280,4 @@ function EmptyStoresState({ onCreate }: { onCreate: () => void }) {
     </div>
   );
 }
+
