@@ -1,5 +1,6 @@
 import { useState, useEffect, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { ChevronDown, Plus, Store as StoreIcon, Package } from 'lucide-react';
 import { storesService } from '../services/stores';
 import { productsService } from '../services/products';
@@ -7,32 +8,34 @@ import type { StoreView } from '../types/store';
 import type { ProductView } from '../types/product';
 import { useAuth } from '../context/AuthContext';
 import { AddProductModal } from '../components/products/AddProductModal';
-
-const currency = (n: number) =>
-  n.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+import { formatCurrency, CURRENCY_OPTIONS, type CurrencyCode } from '../utils/currency';
 
 type ProductsByStore = Record<number, { status: 'loading' | 'loaded' | 'error'; items: ProductView[] }>;
 
 export default function ProductsPage() {
   const { t } = useTranslation();
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const [stores, setStores] = useState<StoreView[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [openStoreId, setOpenStoreId] = useState<number | null>(null);
+
+  const [openStoreIds, setOpenStoreIds] = useState<Set<number>>(new Set());
   const [productsByStore, setProductsByStore] = useState<ProductsByStore>({});
 
   const [isCreatingStore, setIsCreatingStore] = useState(false);
   const [newStoreName, setNewStoreName] = useState('');
+  const [newStoreCurrency, setNewStoreCurrency] = useState<CurrencyCode>('USD');
   const [savingStore, setSavingStore] = useState(false);
 
   const [addProductStoreId, setAddProductStoreId] = useState<number | null>(null);
 
   async function loadStores() {
+    if (!user) return;
     setLoading(true);
     try {
-      const res = await storesService.getAll();
+      const res = await storesService.getByUser(user.id);
       setStores(res.items);
       setError(null);
     } catch {
@@ -63,9 +66,16 @@ export default function ProductsPage() {
   }
 
   function toggleStore(id: number) {
-    const next = openStoreId === id ? null : id;
-    setOpenStoreId(next);
-    if (next !== null) loadProductsForStore(next);
+    setOpenStoreIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+        loadProductsForStore(id);
+      }
+      return next;
+    });
   }
 
   async function handleCreateStore(e: FormEvent) {
@@ -74,8 +84,13 @@ export default function ProductsPage() {
 
     setSavingStore(true);
     try {
-      await storesService.create({ userId: user.id, name: newStoreName.trim() });
+      await storesService.create({
+        userId: user.id,
+        name: newStoreName.trim(),
+        currency: newStoreCurrency,
+      });
       setNewStoreName('');
+      setNewStoreCurrency('USD');
       setIsCreatingStore(false);
       await loadStores();
     } finally {
@@ -104,7 +119,7 @@ export default function ProductsPage() {
       {isCreatingStore && (
         <form
           onSubmit={handleCreateStore}
-          className="mb-5 flex items-center gap-3 rounded-xl border border-border bg-card p-4"
+          className="mb-5 flex flex-wrap items-center gap-3 rounded-xl border border-border bg-card p-4"
         >
           <input
             autoFocus
@@ -112,9 +127,21 @@ export default function ProductsPage() {
             value={newStoreName}
             onChange={(e) => setNewStoreName(e.target.value)}
             placeholder={t('stores.newStoreNamePlaceholder')}
-            className="flex-1 rounded-lg border border-border bg-bg px-4 py-2.5 text-sm text-text-primary
+            className="min-w-[200px] flex-1 rounded-lg border border-border bg-bg px-4 py-2.5 text-sm text-text-primary
               placeholder:text-text-muted focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30"
           />
+          <select
+            value={newStoreCurrency}
+            onChange={(e) => setNewStoreCurrency(e.target.value as CurrencyCode)}
+            className="rounded-lg border border-border bg-bg px-3 py-2.5 text-sm text-text-primary
+              focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30"
+          >
+            {CURRENCY_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
           <button
             type="submit"
             disabled={savingStore || !newStoreName.trim()}
@@ -134,10 +161,11 @@ export default function ProductsPage() {
             <StoreAccordionItem
               key={store.id}
               store={store}
-              isOpen={openStoreId === store.id}
+              isOpen={openStoreIds.has(store.id)}
               onToggle={() => toggleStore(store.id)}
               productsState={productsByStore[store.id]}
               onAddProduct={() => setAddProductStoreId(store.id)}
+              navigate={navigate}
             />
           ))}
         </div>
@@ -160,12 +188,14 @@ function StoreAccordionItem({
   onToggle,
   productsState,
   onAddProduct,
+  navigate,
 }: {
   store: StoreView;
   isOpen: boolean;
   onToggle: () => void;
   productsState?: { status: 'loading' | 'loaded' | 'error'; items: ProductView[] };
   onAddProduct: () => void;
+  navigate: (path: string) => void;
 }) {
   const { t } = useTranslation();
 
@@ -181,7 +211,11 @@ function StoreAccordionItem({
             <StoreIcon size={16} />
           </div>
           <div>
-            <p className="font-medium text-text-primary">{store.name}</p>
+            <div className="flex items-center gap-2">
+              <p className="font-medium text-text-primary">{store.name}</p>
+
+              <span className="font-data text-xs text-text-muted">{store.currency}</span>
+            </div>
             {productsState?.status === 'loaded' && (
               <p className="text-xs text-text-muted">
                 {t('stores.productsCount', { count: productsState.items.length })}
@@ -210,23 +244,27 @@ function StoreAccordionItem({
           ) : (
             <>
               <div className="overflow-x-auto">
-                <table className="w-full border-collapse text-sm">
+                <table className="w-full table-fixed border-collapse text-sm">
                   <thead>
                     <tr className="text-left text-text-muted">
-                      <th className="px-6 py-3 font-normal">{t('stores.table.itemNumber')}</th>
-                      <th className="px-6 py-3 font-normal">{t('stores.table.name')}</th>
-                      <th className="px-6 py-3 font-normal">{t('stores.table.category')}</th>
-                      <th className="px-6 py-3 font-normal">{t('stores.table.price')}</th>
+                      <th className="w-[15%] px-6 py-3 font-normal">{t('stores.table.itemNumber')}</th>
+                      <th className="w-[35%] px-6 py-3 font-normal">{t('stores.table.name')}</th>
+                      <th className="w-[25%] px-6 py-3 font-normal">{t('stores.table.category')}</th>
+                      <th className="w-[25%] px-6 py-3 text-right font-normal">{t('stores.table.price')}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {productsState.items.map((p) => (
-                      <tr key={p.id} className="border-t border-border-subtle">
+                      <tr
+                        key={p.id}
+                        onClick={() => navigate(`/products/${p.id}`)}
+                        className="cursor-pointer border-t border-border-subtle transition-colors hover:bg-bg-elevated/60"
+                      >
                         <td className="px-6 py-3 font-data text-text-muted">{p.itemNumber}</td>
                         <td className="px-6 py-3 font-medium text-text-primary">{p.name}</td>
                         <td className="px-6 py-3 text-text-secondary">{p.category}</td>
-                        <td className="px-6 py-3 font-data text-text-primary">
-                          {currency(p.price)}
+                        <td className="px-6 py-3 text-right font-data text-text-primary">
+                          {formatCurrency(p.price, p.currency)}
                         </td>
                       </tr>
                     ))}

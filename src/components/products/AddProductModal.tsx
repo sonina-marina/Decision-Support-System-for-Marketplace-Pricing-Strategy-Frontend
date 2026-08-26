@@ -3,62 +3,91 @@ import { useTranslation } from 'react-i18next';
 import { Modal } from '../ui/Modal';
 import { TextField } from '../ui/TextField';
 import { productsService } from '../../services/products';
-import type { ProductCreate } from '../../types/product';
+import type { ProductCreate, ProductDetailedView } from '../../types/product';
 
 interface AddProductModalProps {
   storeId: number;
   onClose: () => void;
   onCreated: () => void;
+  editingProduct?: ProductDetailedView;
 }
 
-const DEFAULT_ADVANCED = {
-  acquiring: 0,
-  tax: 0,
-  views: 0,
-  targetActions: 0,
-  buyers: 0,
-  adCosts: 0,
-  inboundLogistic: 0,
-  directLogistic: 0,
-  reverseLogistic: 0,
-  returnRate: 0,
-  defectRate: 0,
-  avgStorage: 0,
-  avgPackaging: 0,
-  sales: 0,
-};
+type FieldKey = Exclude<keyof ProductCreate, 'storeId' | 'name' | 'category'>;
+type StringFields = Record<FieldKey, string>;
 
-type FormState = Omit<ProductCreate, 'storeId'>;
+const ALL_NUMERIC_FIELDS: FieldKey[] = [
+  'itemNumber',
+  'price',
+  'cogs',
+  'commission',
+  'acquiring',
+  'tax',
+  'adCosts',
+  'views',
+  'targetActions',
+  'buyers',
+  'inboundLogistic',
+  'directLogistic',
+  'reverseLogistic',
+  'sales',
+  'returnRate',
+  'defectRate',
+  'avgPackaging',
+  'avgStorage',
+];
 
-const INITIAL_STATE: FormState = {
-  itemNumber: 0,
-  name: '',
-  category: '',
-  price: 0,
-  cogs: 0,
-  commission: 0,
-  ...DEFAULT_ADVANCED,
-};
+// Целые числа (штуки/просмотры) — шаг 1, остальное — деньги/проценты, шаг 0.01
+const INTEGER_FIELDS: FieldKey[] = ['itemNumber', 'views', 'targetActions', 'buyers', 'sales', 'returnRate', 'defectRate'];
 
-export function AddProductModal({ storeId, onClose, onCreated }: AddProductModalProps) {
+function emptyStringFields(): StringFields {
+  return ALL_NUMERIC_FIELDS.reduce((acc, key) => {
+    acc[key] = '';
+    return acc;
+  }, {} as StringFields);
+}
+
+function toNumber(value: string): number {
+  const n = Number(value);
+  return value.trim() === '' || Number.isNaN(n) ? 0 : n;
+}
+
+export function AddProductModal({
+  storeId,
+  onClose,
+  onCreated,
+  editingProduct,
+}: AddProductModalProps) {
   const { t } = useTranslation();
-  const [form, setForm] = useState<FormState>(INITIAL_STATE);
-  const [showAdvanced, setShowAdvanced] = useState(false);
+  const isEditing = !!editingProduct;
+
+  const [name, setName] = useState(editingProduct?.name ?? '');
+  const [category, setCategory] = useState(editingProduct?.category ?? '');
+  const [fields, setFields] = useState<StringFields>(() => {
+    if (!editingProduct) return emptyStringFields();
+    return ALL_NUMERIC_FIELDS.reduce((acc, key) => {
+      acc[key] = String(editingProduct[key] ?? '');
+      return acc;
+    }, {} as StringFields);
+  });
+
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  function update<K extends keyof FormState>(key: K, value: FormState[K]) {
-    setForm((prev) => ({ ...prev, [key]: value }));
+  function updateField(key: FieldKey, raw: string) {
+    if (raw !== '' && !/^\d*\.?\d*$/.test(raw)) return;
+    setFields((prev) => ({ ...prev, [key]: raw }));
   }
 
-  function numberField(key: keyof FormState, label: string, step = '0.01') {
+  function numberField(key: FieldKey) {
     return (
       <TextField
-        label={label}
-        type="number"
-        step={step}
-        value={form[key] as number}
-        onChange={(e) => update(key, Number(e.target.value) as FormState[typeof key])}
+        label={t(`products.productForm.${key}`)}
+        type="text"
+        inputMode="decimal"
+        step={INTEGER_FIELDS.includes(key) ? '1' : '0.01'}
+        placeholder="0"
+        value={fields[key]}
+        onChange={(e) => updateField(key, e.target.value)}
       />
     );
   }
@@ -67,90 +96,129 @@ export function AddProductModal({ storeId, onClose, onCreated }: AddProductModal
     e.preventDefault();
     setSubmitting(true);
     setError(null);
+
+    const payload: ProductCreate = {
+      storeId,
+      name,
+      category,
+      itemNumber: toNumber(fields.itemNumber),
+      price: toNumber(fields.price),
+      cogs: toNumber(fields.cogs),
+      commission: toNumber(fields.commission),
+      acquiring: toNumber(fields.acquiring),
+      tax: toNumber(fields.tax),
+      views: toNumber(fields.views),
+      targetActions: toNumber(fields.targetActions),
+      buyers: toNumber(fields.buyers),
+      adCosts: toNumber(fields.adCosts),
+      inboundLogistic: toNumber(fields.inboundLogistic),
+      directLogistic: toNumber(fields.directLogistic),
+      reverseLogistic: toNumber(fields.reverseLogistic),
+      returnRate: toNumber(fields.returnRate),
+      defectRate: toNumber(fields.defectRate),
+      avgStorage: toNumber(fields.avgStorage),
+      avgPackaging: toNumber(fields.avgPackaging),
+      sales: toNumber(fields.sales),
+    };
+
     try {
-      await productsService.create({ ...form, storeId });
+      if (isEditing) {
+        await productsService.update({ id: editingProduct.id, ...payload });
+      } else {
+        await productsService.create(payload);
+      }
       onCreated();
       onClose();
     } catch {
-      setError(t('products.productForm.creationError'));
+      setError('Не удалось сохранить товар. Проверьте поля и попробуйте снова.');
     } finally {
       setSubmitting(false);
     }
   }
 
+  const canSubmit = !submitting && !!name && !!category;
+
   return (
-    <Modal title={t('stores.addProduct')} onClose={onClose} widthClassName="max-w-2xl">
+    <Modal
+      title={isEditing ? t('products.productForm.editTitle') : t('products.productForm.createTitle')}
+      onClose={onClose}
+      widthClassName="max-w-3xl"
+    >
       <form onSubmit={handleSubmit}>
-        {/* Основное */}
-        <div className="mb-2 grid grid-cols-2 gap-x-4">
+        <div className="grid grid-cols-1 gap-x-4 sm:grid-cols-3">
+          {/* Ряд 1 — идентификация */}
           <TextField
             label={t('products.productForm.name')}
-            value={form.name}
-            onChange={(e) => update('name', e.target.value)}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             required
           />
           <TextField
             label={t('products.productForm.category')}
-            value={form.category}
-            onChange={(e) => update('category', e.target.value)}
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
             required
           />
-        </div>
-        <div className="mb-2 grid grid-cols-2 gap-x-4">
-          {numberField('itemNumber', t('products.productForm.itemNumber'), '1')}
-          {numberField('price', t('products.productForm.price'))}
-        </div>
-        <div className="mb-2 grid grid-cols-2 gap-x-4">
-          {numberField('cogs', t('products.productForm.cogs'))}
-          {numberField('commission', t('products.productForm.commission'), '1')}
-        </div>
- 
-        <button
-          type="button"
-          onClick={() => setShowAdvanced((v) => !v)}
-          className="mb-3 mt-1 text-sm font-medium text-accent hover:text-accent-hover"
-        >
-          {showAdvanced ? t('products.productForm.hideAdvanced') : t('products.productForm.showAdvanced')}
-        </button>
+          {numberField('itemNumber')}
 
-        {showAdvanced && (
-          <div className="mb-2 grid grid-cols-2 gap-x-4">
-            {numberField('acquiring', t('products.productForm.acquiring'), '1')}
-            {numberField('tax', t('products.productForm.tax'), '1')}
-            {numberField('views', t('products.productForm.views'), '1')}
-            {numberField('targetActions', t('products.productForm.targetActions'), '1')}
-            {numberField('buyers', t('products.productForm.buyers'), '1')}
-            {numberField('adCosts', t('products.productForm.adCosts'))}
-            {numberField('inboundLogistic', t('products.productForm.inboundLogistic'))}
-            {numberField('directLogistic', t('products.productForm.directLogistic'))}
-            {numberField('reverseLogistic', t('products.productForm.reverseLogistic'))}
-            {numberField('returnRate', t('products.productForm.returnRate'), '1')}
-            {numberField('defectRate', t('products.productForm.defectRate'), '1')}
-            {numberField('avgStorage', t('products.productForm.avgStorage'))}
-            {numberField('avgPackaging', t('products.productForm.avgPackaging'))}
-            {numberField('sales', t('products.productForm.sales'), '1')}              </div>
-        )}
+          {/* Ряд 2 — цена */}
+          {numberField('price')}
+          {numberField('cogs')}
+          {numberField('commission')}
 
-        {error && <p className="mb-3 text-sm text-danger">{error}</p>}
+          {/* Разделитель между базовыми полями и данными для расчёта метрик */}
+          <div className="col-span-1 my-1 border-t border-border-subtle sm:col-span-3" />
 
-        <div className="mt-4 flex justify-end gap-3">
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-lg border border-border px-4 py-2.5 text-sm text-text-secondary
-              transition-colors hover:bg-bg"
-          >
-            {t('common.cancel')}
-          </button>
-          <button
-            type="submit"
-            disabled={submitting || !form.name || !form.category}
-            className="rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-accent-foreground
-              transition-colors hover:bg-accent-hover disabled:opacity-60"
-          >
-            {submitting ? t('common.loading') : t('common.save')}
-          </button>
+          {/* Ряд 3 — прочие издержки */}
+          {numberField('acquiring')}
+          {numberField('tax')}
+          {numberField('adCosts')}
+
+          {/* Ряд 4 — воронка */}
+          {numberField('views')}
+          {numberField('targetActions')}
+          {numberField('buyers')}
+
+          {/* Ряд 5 — логистика */}
+          {numberField('inboundLogistic')}
+          {numberField('directLogistic')}
+          {numberField('reverseLogistic')}
+
+          {/* Ряд 6 — продажи/возвраты/брак */}
+          {numberField('sales')}
+          {numberField('returnRate')}
+          {numberField('defectRate')}
+
+          {/* Ряд 7 — упаковка/хранение + кнопки третьим элементом */}
+          {numberField('avgPackaging')}
+          {numberField('avgStorage')}
+          <div className="mb-5">
+            {/* невидимый лейбл — чтобы кнопки встали вровень с полями по высоте */}
+            <div className="mb-2 block select-none text-sm text-transparent" aria-hidden>
+              &nbsp;
+            </div>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex-1 rounded-lg border border-border px-4 py-3 text-sm text-text-secondary
+                  transition-colors hover:bg-bg"
+              >
+                {t('common.cancel')}
+              </button>
+              <button
+                type="submit"
+                disabled={!canSubmit}
+                className="flex-1 rounded-lg bg-accent px-4 py-3 text-sm font-semibold text-accent-foreground
+                  transition-colors hover:bg-accent-hover disabled:opacity-60"
+              >
+                {submitting ? t('common.loading') : t('common.save')}
+              </button>
+            </div>
+          </div>
         </div>
+
+        {error && <p className="mt-2 text-sm text-danger">{error}</p>}
       </form>
     </Modal>
   );

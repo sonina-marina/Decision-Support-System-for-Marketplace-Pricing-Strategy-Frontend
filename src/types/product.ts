@@ -1,3 +1,5 @@
+import type { CurrencyCode } from '../utils/currency';
+
 /** Данные для расчёта юнит-экономики — соответствует ProductCalculationData */
 export interface ProductCalculationData {
   price: number;
@@ -41,6 +43,7 @@ export interface ProductView {
   name: string;
   category: string;
   price: number;
+  currency: CurrencyCode;
 }
 
 /** Соответствует ProductDetailedView — GET /api/v1/products/metrics/ */
@@ -50,6 +53,7 @@ export interface ProductDetailedView extends ProductCalculationData {
   itemNumber: number;
   name: string;
   category: string;
+  currency: CurrencyCode;
   metrics: MetricsView[];
 }
 

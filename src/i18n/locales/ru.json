@@ -89,6 +89,8 @@
       "cta": "Добавить товар"
     },
     "productForm": {
+      "createTitle": "Добавить товар",
+      "editTitle": "Изменить товар",
       "name": "Название",
       "category": "Категория",
       "itemNumber": "Артикул",
@@ -111,7 +113,35 @@
       "avgStorage": "Хранение (среднее)",
       "avgPackaging": "Упаковка, (среднее)",
       "sales": "Количество продаж",
-      "creationError": "Не удалось создать товар. Проверьте поля и попробуйте снова."
+      "creationError": "Не удалось создать товар. Проверьте поля и попробуйте снова.",
+      "showAdvanced": "Показать остальные поля (для расчёта метрик)",
+      "hideAdvanced": "Скрыть остальные поля"
+    },
+    "productPage": {
+      "back": "Назад к товарам",
+      "edit": "Редактировать",
+      "metrics": "Метрики",
+      "calculate": "Рассчитать матрики",
+      "missingFieldsHint": "Заполните поля",
+      "noMetrics": "Метрики еще не рассчитывались",
+      "history": "История расчетов",
+      "loadError": "Не удалось загрузить товар",
+      "calculateError": "Не удалось рассчитать метрики",
+      "metricsFields": {
+        "conversion": "Conversion",
+        "cac": "CAC",
+        "requiredCpa": "Требуемый CPA",
+        "ltc": "LTC",
+        "cm": "CM",
+        "ltv": "LTV",
+        "productRoi": "ROI"
+      },
+      "section": {
+        "pricing": "Цены и издержки",
+        "funnel": "Воронка и реклама",
+        "logistics": "Логистика и возвраты"
+      }
+
     }
   },
   "common": {

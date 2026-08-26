@@ -89,6 +89,8 @@
       "cta": "Add Product"
     },
     "productForm": {
+      "createTitle": "Add Product",
+      "editTitle": "Edit Product",
       "name": "Name",
       "category": "Category",
       "itemNumber": "Item Number",
@@ -111,7 +113,34 @@
       "avgStorage": "Average Cost of Storage",
       "avgPackaging": "Average Cost of Packeging",
       "sales": "Sales",
-      "creationError": "The product could not be created. Check the words and try again."
+      "creationError": "The product could not be created. Check the words and try again.",
+      "showAdvanced": "Show remaining fields (for metrics calculation)",
+      "hideAdvanced": "Hide remaining fields"
+    },
+    "productPage": {
+      "back": "Back to Products",
+      "edit": "Edit",
+      "metrics": "Metrics",
+      "calculate": "Calculate metrics",
+      "missingFieldsHint": "Fill in the fields",
+      "noMetrics": "No metrics calculated yet",
+      "history": "Calculation history",
+      "loadError": "Failed to load product",
+      "calculateError": "Failed to calculate metrics",
+      "metricsFields": {
+        "conversion": "Conversion",
+        "cac": "CAC",
+        "requiredCpa": "Required CPA",
+        "ltc": "LTC",
+        "cm": "CM",
+        "ltv": "LTV",
+        "productRoi": "ROI"
+      },
+      "section": {
+        "pricing": "Pricing",   
+        "funnel": "Funnel & Ads",   
+        "logistics": "Logistics & Returns"  
+      }
     }
   },
   "common": {
