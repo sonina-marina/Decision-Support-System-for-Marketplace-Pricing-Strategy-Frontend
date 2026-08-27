@@ -17,7 +17,7 @@ interface SidebarProps {
 }
 
 const NAV_ITEMS = [
-  { to: '/dashboard', icon: LayoutGrid, key: 'dashboard' },
+//  { to: '/dashboard', icon: LayoutGrid, key: 'dashboard' },
   { to: '/products', icon: Hexagon, key: 'products' },
   { to: '/calculator', icon: FileText, key: 'unitEconomics' },
   { to: '/scenarios', icon: Activity, key: 'scenarios' },

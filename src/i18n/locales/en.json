@@ -25,14 +25,13 @@
     "eyebrow": "Decision support system",
     "heroLine1": "Price with",
     "heroLine2": "confidence.",
-    "heroSubtitle": "Model pricing scenarios, calculate unit economics, and identify margin risks — before they hit your bottom line.",
+    "heroSubtitle": "Model pricing scenarios, calculate unit economics, and spot hidden leaks and vulnerabilities",
     "stats": {
       "marginLift": "Avg margin lift\nafter scenario modeling",
       "productsTracked": "Products tracked\nacross all sellers",
       "calcsPerSession": "Calc per session\naverage per user",
       "riskFlags": "Risk flags caught\nbefore listing"
     },
-    "footerNote": "Demo environment · No real data stored",
     "signIn": {
       "title": "Sign in",
       "subtitle": "Enter your credentials to continue",
@@ -47,7 +46,6 @@
       "title": "Create account",
       "subtitle": "Start pricing with confidence in minutes",
       "nameLabel": "Full name",
-      "namePlaceholder": "Maria Chen",
       "emailLabel": "Email address",
       "emailPlaceholder": "you@company.com",
       "passwordLabel": "Password",

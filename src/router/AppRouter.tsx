@@ -19,7 +19,7 @@ export default function AppRouter() {
         <Routes>
             <Route
                 path="/"
-                element={<Navigate to={ROUTES.DASHBOARD} replace />}
+                element={<Navigate to={ROUTES.PRODUCTS} replace />}
             />
             <Route path={ROUTES.LOGIN} element={<LoginPage />} />
             <Route path={ROUTES.REGISTER} element={<RegisterPage />} />

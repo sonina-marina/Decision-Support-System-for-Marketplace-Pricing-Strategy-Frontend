@@ -31,7 +31,7 @@ export default function LoginPage() {
     setSubmitting(true);
     try {
       await login({ email, password });
-      navigate('/dashboard');
+      navigate('/products');
     } catch {
       setErrors({ password: 'Неверный email или пароль' });
     } finally {

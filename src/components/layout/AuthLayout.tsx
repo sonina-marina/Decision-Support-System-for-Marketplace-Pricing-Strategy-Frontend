@@ -84,9 +84,6 @@ export function AuthLayout({ children }: { children: ReactNode }) {
           <div className="mx-auto w-full max-w-sm">{children}</div>
         </div>
 
-        <p className="mt-8 text-center font-data text-xs text-text-muted">
-          {t('auth.footerNote')}
-        </p>
       </div>
     </div>
   );

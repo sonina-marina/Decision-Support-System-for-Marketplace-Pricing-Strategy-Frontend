@@ -57,7 +57,7 @@ export default function RegisterPage() {
       });
 
       await login({ email: form.email, password: form.password });
-      navigate('/dashboard');
+      navigate('/products');
     } catch {
       setErrors((prev) => ({
         ...prev,
@@ -77,7 +77,6 @@ export default function RegisterPage() {
         <TextField
           label={t('auth.signUp.nameLabel')}
           name="name"
-          placeholder={t('auth.signUp.namePlaceholder')}
           value={form.name}
           onChange={(e) => update('name', e.target.value)}
           error={errors.name}
