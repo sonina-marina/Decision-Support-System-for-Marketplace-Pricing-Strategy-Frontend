@@ -175,5 +175,19 @@
     },
     "addProduct": "Add Product",
     "noProducts": "No products in this store yet"
+  },
+  "calculator": {
+  "title": "Unit Economics Calculator",
+  "subtitle": "Pick an existing product or enter your own numbers — nothing is saved",
+  "loadFrom": "Load from product",
+  "customOption": "Custom (not saved)",
+  "currency": "Currency",
+  "result": "Result",
+  "hints": {
+    "unprofitable": "Product is unprofitable — margin is negative",
+    "lowMargin": "Low profitability (ROI under 15%)",
+    "adCostsTooHigh": "Ad costs per buyer exceed the margin per sale",
+    "operationalCostsHigh": "Operational costs make up over 85% of the price"
   }
+}
 }
