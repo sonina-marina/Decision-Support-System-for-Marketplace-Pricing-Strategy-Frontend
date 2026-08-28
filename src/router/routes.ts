@@ -7,4 +7,5 @@ export const ROUTES = {
     CALCULATOR: "/calculator",
     SCENARIOS: "/scenarios",
     REPORTS: "/reports",
+    HELP: '/help',
 };

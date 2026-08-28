@@ -8,6 +8,7 @@ import {
   Activity,
   BarChart3,
   LogOut,
+  HelpCircle,
 } from 'lucide-react';
 import type { UserView } from '../../types/user';
 
@@ -22,6 +23,7 @@ const NAV_ITEMS = [
   { to: '/calculator', icon: FileText, key: 'unitEconomics' },
   { to: '/scenarios', icon: Activity, key: 'scenarios' },
   { to: '/reports', icon: BarChart3, key: 'reports' },
+  { to: '/help', icon: HelpCircle, key: 'help' },
 ] as const;
 
 const ROLE_LABEL_KEY = {

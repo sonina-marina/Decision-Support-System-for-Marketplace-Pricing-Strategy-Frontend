@@ -13,6 +13,7 @@ import MainLayout from "../components/layout/MainLayout";
 import { ROUTES } from "./routes";
 import CalculatorPage from "../pages/CalculatorPage";
 import { ProtectedRoute } from "../components/routing/ProtectedRoute";
+import HelpPage from "../pages/HelpPage";
 
 export default function AppRouter() {
     return (
@@ -32,6 +33,7 @@ export default function AppRouter() {
                     <Route path={ROUTES.CALCULATOR} element={<CalculatorPage />} />
                     <Route path={ROUTES.SCENARIOS} element={<ScenariosPage />} />
                     <Route path={ROUTES.REPORTS} element={<ReportsPage />} />
+                    <Route path={ROUTES.HELP} element={<HelpPage />} />
                 </Route>
             </Route>
 
