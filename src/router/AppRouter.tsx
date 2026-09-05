@@ -14,6 +14,7 @@ import { ROUTES } from "./routes";
 import CalculatorPage from "../pages/CalculatorPage";
 import { ProtectedRoute } from "../components/routing/ProtectedRoute";
 import HelpPage from "../pages/HelpPage";
+import HelpMetricPage from "../pages/HelpMetricPage";
 
 export default function AppRouter() {
     return (
@@ -34,6 +35,7 @@ export default function AppRouter() {
                     <Route path={ROUTES.SCENARIOS} element={<ScenariosPage />} />
                     <Route path={ROUTES.REPORTS} element={<ReportsPage />} />
                     <Route path={ROUTES.HELP} element={<HelpPage />} />
+                    <Route path={ROUTES.METRIC_HELP} element={<HelpMetricPage />} />
                 </Route>
             </Route>
 

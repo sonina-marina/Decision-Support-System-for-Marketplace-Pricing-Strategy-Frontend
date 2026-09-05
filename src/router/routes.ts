@@ -8,4 +8,5 @@ export const ROUTES = {
     SCENARIOS: "/scenarios",
     REPORTS: "/reports",
     HELP: '/help',
+    METRIC_HELP: '/help/metrics/:metricKey/:status',
 };

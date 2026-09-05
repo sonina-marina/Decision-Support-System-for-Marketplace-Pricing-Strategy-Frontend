@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, Pencil, ChevronDown, TrendingUp, Info } from 'lucide-react';
 import { productsService } from '../services/products';
@@ -28,6 +28,27 @@ function getMissingFieldsForCalculation(
   if (ltc <= 0) missing.push(t('products.productPage.costsLabel'));
 
   return missing;
+}
+
+type MetricStatus = 'below' | 'normal' | 'above' | null;
+
+/** CM ниже нуля — товар в убытке на уровне продажи. Верхней границы нет — прибыль не бывает "слишком высокой". */
+function getCmStatus(cm: number): MetricStatus {
+  return cm < 0 ? 'below' : 'normal';
+}
+
+/**
+ * LTV:CAC — единственная пара с сопоставимой размерностью ("на одного покупателя").
+ * < 1 — реклама не окупается (кассовый разрыв); 1–5 — здоровый диапазон (включает точку
+ * безубыточности и "золотой стандарт" 3:1 из статьи); > 5 — либо мало конкурентов,
+ * либо недовкладываетесь в рекламу.
+ */
+function getLtvStatus(ltv: number, cac: number): MetricStatus {
+  if (cac <= 0) return null; // не с чем сравнивать
+  const ratio = ltv / cac;
+  if (ratio < 1) return 'below';
+  if (ratio > 5) return 'above';
+  return 'normal';
 }
 
 export default function ProductPage() {
@@ -113,13 +134,13 @@ export default function ProductPage() {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_340px]">
-        {/* Левая колонка — все характеристики товара */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[7fr_5fr]">
+        {/* Левая колонка — характеристики товара, теперь уже */}
         <div className="rounded-xl border border-border bg-card p-5">
           <SectionHeading>{t('products.productPage.section.pricing')}</SectionHeading>
           <TwoColumnList>
             <DetailRow label={t('products.productForm.price')} value={formatCurrency(product.price, product.currency)} />
-            <DetailRow label={t('products.productForm.cogs')} value={`${product.cogs}`} />
+            <DetailRow label={t('products.productForm.cogs')} value={formatCurrency(product.cogs, product.currency)} />
             <DetailRow label={t('products.productForm.commission')} value={`${product.commission}%`} />
             <DetailRow label={t('products.productForm.acquiring')} value={`${product.acquiring}%`} />
             <DetailRow label={t('products.productForm.tax')} value={`${product.tax}%`} />
@@ -130,22 +151,23 @@ export default function ProductPage() {
             <DetailRow label={t('products.productForm.views')} value={String(product.views)} />
             <DetailRow label={t('products.productForm.targetActions')} value={String(product.targetActions)} />
             <DetailRow label={t('products.productForm.buyers')} value={String(product.buyers)} />
-            <DetailRow label={t('products.productForm.adCosts')} value={`${product.adCosts}`} />
+            <DetailRow label={t('products.productForm.adCosts')} value={formatCurrency(product.adCosts, product.currency)} />
             <DetailRow label={t('products.productForm.sales')} value={String(product.sales)} />
           </TwoColumnList>
 
           <SectionHeading>{t('products.productPage.section.logistics')}</SectionHeading>
           <TwoColumnList>
-            <DetailRow label={t('products.productForm.inboundLogistic')} value={`${product.inboundLogistic}`} />
-            <DetailRow label={t('products.productForm.directLogistic')} value={`${product.directLogistic}`} />
-            <DetailRow label={t('products.productForm.reverseLogistic')} value={`${product.reverseLogistic}`}/>
+            <DetailRow label={t('products.productForm.inboundLogistic')} value={formatCurrency(product.inboundLogistic, product.currency)} />
+            <DetailRow label={t('products.productForm.directLogistic')} value={formatCurrency(product.directLogistic, product.currency)} />
+            <DetailRow label={t('products.productForm.reverseLogistic')} value={formatCurrency(product.reverseLogistic, product.currency)} />
             <DetailRow label={t('products.productForm.returnRate')} value={`${product.returnRate}%`} />
             <DetailRow label={t('products.productForm.defectRate')} value={`${product.defectRate}%`} />
-            <DetailRow label={t('products.productForm.avgStorage')} value={`${product.avgStorage}`}/>
-            <DetailRow label={t('products.productForm.avgPackaging')} value={`${product.avgPackaging}`} />
+            <DetailRow label={t('products.productForm.avgStorage')} value={formatCurrency(product.avgStorage, product.currency)} />
+            <DetailRow label={t('products.productForm.avgPackaging')} value={formatCurrency(product.avgPackaging, product.currency)} />
           </TwoColumnList>
         </div>
- 
+
+        {/* Правая колонка — расчёт + результат с описаниями */}
         <div className="rounded-xl border border-border bg-card p-5">
           <h2 className="mb-3 font-semibold text-text-primary">{t('products.productPage.metrics')}</h2>
 
@@ -173,23 +195,44 @@ export default function ProductPage() {
             <p className="text-sm text-text-muted">{t('products.productPage.noMetrics')}</p>
           ) : (
             <div className="flex flex-col">
-              <DetailRow
+              <MetricRow
                 label={t('products.productPage.metricsFields.conversion')}
+                description={t('products.productPage.metricsShortDesc.conversion')}
                 value={percent(latestMetrics.conversion * 100)}
               />
-              <DetailRow label={t('products.productPage.metricsFields.cac')} value={formatCurrency(latestMetrics.cac, product.currency)} />
-              <DetailRow
+              <MetricRow
+                label={t('products.productPage.metricsFields.cac')}
+                description={t('products.productPage.metricsShortDesc.cac')}
+                value={formatCurrency(latestMetrics.cac, product.currency)}
+              />
+              <MetricRow
                 label={t('products.productPage.metricsFields.requiredCpa')}
-                value={formatCurrency(latestMetrics.requiredCpa, product.currency)}             />
-              <DetailRow label={t('products.productPage.metricsFields.ltc')} value={formatCurrency(latestMetrics.ltc, product.currency)}/>
-              <DetailRow
+                description={t('products.productPage.metricsShortDesc.requiredCpa')}
+                value={formatCurrency(latestMetrics.requiredCpa, product.currency)}
+              />
+              <MetricRow
+                label={t('products.productPage.metricsFields.ltc')}
+                description={t('products.productPage.metricsShortDesc.ltc')}
+                value={formatCurrency(latestMetrics.ltc, product.currency)}
+              />
+              <MetricRow
                 label={t('products.productPage.metricsFields.cm')}
+                description={t('products.productPage.metricsShortDesc.cm')}
                 value={formatCurrency(latestMetrics.cm, product.currency)}
                 valueClassName={latestMetrics.cm >= 0 ? 'text-success' : 'text-danger'}
+                status={getCmStatus(latestMetrics.cm)}
+                metricKey="cm"
               />
-              <DetailRow label={t('products.productPage.metricsFields.ltv')} value={formatCurrency(latestMetrics.ltv, product.currency)} />
-              <DetailRow
+              <MetricRow
+                label={t('products.productPage.metricsFields.ltv')}
+                description={t('products.productPage.metricsShortDesc.ltv')}
+                value={formatCurrency(latestMetrics.ltv, product.currency)}
+                status={getLtvStatus(latestMetrics.ltv, latestMetrics.cac)}
+                metricKey="ltv"
+              />
+              <MetricRow
                 label={t('products.productPage.metricsFields.productRoi')}
+                description={t('products.productPage.metricsShortDesc.productRoi')}
                 value={percent(latestMetrics.productRoi)}
                 valueClassName={latestMetrics.productRoi >= 0 ? 'text-success' : 'text-danger'}
               />
@@ -198,6 +241,7 @@ export default function ProductPage() {
         </div>
       </div>
 
+      {/* История */}
       {sortedMetrics.length > 0 && (
         <div className="mt-6 rounded-xl border border-border bg-card">
           <button
@@ -242,7 +286,7 @@ export default function ProductPage() {
                       <td
                         className={`px-5 py-3 font-data ${m.cm >= 0 ? 'text-success' : 'text-danger'}`}
                       >
-                        {formatCurrency(m.cm, product.currency)}  
+                        {formatCurrency(m.cm, product.currency)}
                       </td>
                       <td className="px-5 py-3 font-data text-text-secondary">{formatCurrency(m.ltv, product.currency)}</td>
                       <td
@@ -303,6 +347,61 @@ function SectionHeading({ children }: { children: ReactNode }) {
 
 function TwoColumnList({ children }: { children: ReactNode }) {
   return <div className="grid grid-cols-1 gap-x-8 sm:grid-cols-2">{children}</div>;
+}
+
+function MetricRow({
+  label,
+  description,
+  value,
+  valueClassName = 'text-text-primary',
+  status,
+  metricKey,
+}: {
+  label: string;
+  description: string;
+  value: string;
+  valueClassName?: string;
+  status?: MetricStatus;
+  metricKey?: string;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-4 border-b border-border-subtle py-3 text-sm last:border-0">
+      <div className="min-w-0">
+        <p className="text-text-primary">{label}</p>
+        <p className="text-xs text-text-muted">{description}</p>
+      </div>
+    <div className="flex shrink-0 items-center gap-3">
+      {status && metricKey && <StatusBadge status={status} metricKey={metricKey} />}
+      <span className={`font-data ${valueClassName}`}>{value}</span>
+    </div>
+    </div>
+  );
+}
+
+function StatusBadge({ status, metricKey }: { status: MetricStatus; metricKey: string }) {
+  const { t } = useTranslation();
+  if (!status) return null;
+
+  const colorClass =
+    status === 'below'
+      ? 'border-danger/30 bg-danger/10 text-danger'
+      : status === 'above'
+        ? 'border-warning/30 bg-warning/10 text-warning'
+        : 'border-success/30 bg-success/10 text-success';
+
+  const badge = (
+    <span className={`inline-block whitespace-nowrap rounded-md border px-2 py-0.5 text-xs font-medium ${colorClass}`}>
+      {t(`products.productPage.status.${status}`)}
+    </span>
+  );
+
+  if (status === 'normal') return badge;
+
+  return (
+    <Link to={`/help/metrics/${metricKey}/${status}`} className="transition-opacity hover:opacity-80">
+      {badge}
+    </Link>
+  );
 }
 
 function DetailRow({
