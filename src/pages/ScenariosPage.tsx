@@ -187,7 +187,7 @@ export default function ScenariosPage() {
                   <th className="w-[30%] px-4 py-2.5 font-normal" />
                   <th className="px-4 py-2.5 text-right font-normal">{t('scenarios.variantA')}</th>
                   <th className="px-4 py-2.5 text-right font-normal">{t('scenarios.variantB')}</th>
-                  <th className="px-4 py-2.5 text-right font-normal">Δ</th>
+                  <th className="px-4 py-2.5 text-right font-normal">{t('scenarios.delta')}</th>
                 </tr>
               </thead>
               <tbody>

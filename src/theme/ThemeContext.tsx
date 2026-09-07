@@ -16,8 +16,6 @@ function getInitialTheme(): Theme {
   const stored = localStorage.getItem(STORAGE_KEY);
   if (stored === 'dark' || stored === 'light') return stored;
 
-  // Дефолт — тёмная тема (как в макете), но уважаем системные настройки,
-  // если пользователь явно выбрал светлую на уровне ОС.
   const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
   return prefersLight ? 'light' : 'dark';
 }

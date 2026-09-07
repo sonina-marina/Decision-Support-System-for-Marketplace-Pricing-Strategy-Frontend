@@ -12,7 +12,7 @@
   "nav": {
     "dashboard": "Dashboard",
     "products": "Products",
-    "unitEconomics": "Unit Economics",
+    "unitEconomics": "Calculator",
     "scenarios": "Scenarios",
     "reports": "Reports",
     "signOut": "Sign out",
@@ -96,8 +96,7 @@
       "price": "Price",
       "cogs": "Сost of Goods Sold",
       "commission": "Commission (%)",
-      "showAdvanced": "Show other fields (for calculationg metrics)",
-      "hideAdvanced": "Hide other fields",
+      "warning": "The fields below are optional for creating the product but required for calculating metrics",
       "acquiring": "Acquire (%)",
       "tax": "Tax (%)",
       "views": "Views",
@@ -119,7 +118,11 @@
     "productPage": {
       "back": "Back to Products",
       "edit": "Edit",
+      "delete": "Delete",
+      "deleteTitle": "Delete product",
+      "deleteMessage": "Delete \"{{name}}\"? This action cannot be undone.",
       "metrics": "Metrics",
+      "metricsTooltip": "You can view all the metrics in the Help tab",
       "calculate": "Calculate metrics",
       "missingFieldsHint": "Fill in the fields",
       "noMetrics": "No metrics calculated yet",
@@ -160,7 +163,8 @@
     "cancel": "Cancel",
     "save": "Save",
     "loading": "Loading...",
-    "back": "Back"
+    "back": "Back",
+    "deleteError": "Failed to delete"
   },
   "titles": {
     "dashboard": "",
@@ -190,11 +194,15 @@
       "price": "Price"
     },
     "addProduct": "Add Product",
-    "noProducts": "No products in this store yet"
+    "noProducts": "No products in this store yet",
+    "delete": "Delete store",
+    "deleteTitle": "Delete store",
+    "deleteMessage": "Delete \"{{name}}\"? This action cannot be undone.",
+    "deleteMessageWithProducts": "\"{{name}}\" has {{count}} product(s). Delete the store anyway?"
   },
   "calculator": {
     "title": "Unit Economics Calculator",
-    "subtitle": "Pick an existing product or enter your own numbers - nothing is saved",
+    "subtitle": "Select an existing product or enter new data. The product and any changes made to it will not be saved to the database.\nYou can use this calculator to see in real time how unit economics metrics change based on the entered data.",
     "loadFrom": "Load from product",
     "customOption": "Custom (not saved)",
     "currency": "Currency",
@@ -223,7 +231,7 @@
     },
     "metricStatus": {
     "notFound": "Explanation for this status is not available yet.",
-    "backToHelp": "Back to all metrics",
+    "backToHelp": "View other metrics",
     "section": {
       "whatItMeans": "What it means",
       "whyItHappens": "Why it happens",
@@ -259,6 +267,7 @@
     "variantB": "Variant B",
     "duplicateFromA": "Copy from A",
     "comparison": "Comparison",
-    "needBothVariants": "Fill in both variants to see the comparison"
+    "needBothVariants": "Fill in both variants to see the comparison",
+    "delta": "Difference"
   }
 }

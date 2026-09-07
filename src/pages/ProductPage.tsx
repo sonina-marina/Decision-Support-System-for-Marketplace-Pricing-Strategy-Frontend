@@ -1,13 +1,14 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, Pencil, ChevronDown, TrendingUp, Info } from 'lucide-react';
+import { ArrowLeft, Pencil, ChevronDown, TrendingUp, Info, Trash2 } from 'lucide-react';
 import { productsService } from '../services/products';
 import { metricsService } from '../services/metrics';
 import { MetricCalculator } from '../utils/unitEconomicCalculator';
 import type { ProductDetailedView, MetricsView } from '../types/product';
 import { AddProductModal } from '../components/products/AddProductModal';
 import { formatCurrency } from '../utils/currency';
+import { ConfirmDialog } from '../components/ui/ConfirmDialog';
 const percent = (n: number) => `${n.toFixed(1)}%`;
 const dateTime = (iso: string) => new Date(iso).toLocaleString();
 
@@ -44,7 +45,7 @@ function getCmStatus(cm: number): MetricStatus {
  * либо недовкладываетесь в рекламу.
  */
 function getLtvStatus(ltv: number, cac: number): MetricStatus {
-  if (cac <= 0) return null; // не с чем сравнивать
+  if (cac <= 0) return null; 
   const ratio = ltv / cac;
   if (ratio < 1) return 'below';
   if (ratio > 5) return 'above';
@@ -63,6 +64,8 @@ export default function ProductPage() {
   const [calculating, setCalculating] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [dataChangedSinceCalc, setDataChangedSinceCalc] = useState(false);
 
   async function loadProduct() {
     setLoading(true);
@@ -86,6 +89,7 @@ export default function ProductPage() {
     setCalculating(true);
     try {
       await metricsService.calculateForProduct(productId);
+      setDataChangedSinceCalc(false);
       await loadProduct();
     } catch {
       setError(t('products.productPage.calculateError'));
@@ -101,7 +105,11 @@ export default function ProductPage() {
   const sortedMetrics = [...product.metrics].sort(
     (a, b) => new Date(b.calculatedAt).getTime() - new Date(a.calculatedAt).getTime()
   );
-  const latestMetrics: MetricsView | undefined = sortedMetrics[0];
+
+  const latestMetrics: MetricsView | undefined = dataChangedSinceCalc
+    ? undefined
+    : sortedMetrics[0];
+
   const missingFields = getMissingFieldsForCalculation(product, t);
   const canCalculate = missingFields.length === 0;
 
@@ -123,15 +131,26 @@ export default function ProductPage() {
             {product.category} · {t('stores.table.itemNumber')} {product.itemNumber}
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => setIsEditing(true)}
-          className="flex items-center gap-2 rounded-lg border border-border px-3.5 py-2 text-sm
-            text-text-secondary transition-colors hover:border-accent/40 hover:text-accent"
-        >
-          <Pencil size={15} />
-          {t('products.productPage.edit')}
-        </button>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => setIsEditing(true)}
+            className="flex items-center gap-2 rounded-lg border border-border px-3.5 py-2 text-sm
+              text-text-secondary transition-colors hover:border-accent/40 hover:text-accent"
+          >
+            <Pencil size={15} />
+            {t('products.productPage.edit')}
+          </button>
+          <button
+            type="button"
+            onClick={() => setIsDeleting(true)}
+            className="flex items-center gap-2 rounded-lg border border-border px-3.5 py-2 text-sm
+              text-text-secondary transition-colors hover:border-danger/40 hover:text-danger"
+          >
+            <Trash2 size={15} />
+            {t('products.productPage.delete')}
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[7fr_5fr]">
@@ -169,7 +188,14 @@ export default function ProductPage() {
 
         {/* Правая колонка — расчёт + результат с описаниями */}
         <div className="rounded-xl border border-border bg-card p-5">
-          <h2 className="mb-3 font-semibold text-text-primary">{t('products.productPage.metrics')}</h2>
+          
+          <div className="mb-3 flex items-center gap-2">
+            <h2 className="font-semibold text-text-primary">
+              {t('products.productPage.metrics')}
+            </h2>
+              <InfoTooltipWithoutBorders text={t('products.productPage.metricsTooltip')} />
+          </div>
+
 
           <div className="mb-4 flex items-center gap-2">
             <button
@@ -308,9 +334,26 @@ export default function ProductPage() {
           storeId={product.storeId}
           editingProduct={product}
           onClose={() => setIsEditing(false)}
-          onCreated={loadProduct}
+          onCreated={() => {
+            setDataChangedSinceCalc(true);
+            loadProduct();
+          }}
         />
       )}
+
+      {isDeleting && (
+        <ConfirmDialog
+          title={t('products.productPage.deleteTitle')}
+          message={t('products.productPage.deleteMessage', { name: product.name })}
+          confirmLabel={t('products.productPage.delete')}
+          onClose={() => setIsDeleting(false)}
+          onConfirm={async () => {
+            await productsService.delete(product.id);
+            navigate('/products');
+          }}
+        />
+      )}
+
     </div>
   );
 }
@@ -321,6 +364,28 @@ function InfoTooltip({ text }: { text: string }) {
       <div
         tabIndex={0}
         className="flex h-9 w-9 items-center justify-center rounded-lg border border-border
+          text-text-muted transition-colors hover:text-text-primary focus:outline-none"
+      >
+        <Info size={16} />
+      </div>
+      <div
+        role="tooltip"
+        className="pointer-events-none absolute right-0 top-full z-10 mt-2 w-64 rounded-lg border border-border
+          bg-bg-elevated px-3 py-2 text-xs text-text-secondary opacity-0 shadow-card transition-opacity
+          group-hover:opacity-100 group-focus-within:opacity-100"
+      >
+        {text}
+      </div>
+    </div>
+  );
+}
+
+function InfoTooltipWithoutBorders({ text }: { text: string }) {
+  return (
+    <div className="group relative shrink-0">
+      <div
+        tabIndex={0}
+        className="flex h-9 w-9 items-center justify-center rounded-full
           text-text-muted transition-colors hover:text-text-primary focus:outline-none"
       >
         <Info size={16} />

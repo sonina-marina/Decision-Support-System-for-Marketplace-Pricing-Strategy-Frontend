@@ -1,13 +1,14 @@
 import { useState, useEffect, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { ChevronDown, Plus, Store as StoreIcon, Package } from 'lucide-react';
+import { ChevronDown, Plus, Store as StoreIcon, Package, Trash2 } from 'lucide-react';
 import { storesService } from '../services/stores';
 import { productsService } from '../services/products';
 import type { StoreView } from '../types/store';
 import type { ProductView } from '../types/product';
 import { useAuth } from '../context/AuthContext';
 import { AddProductModal } from '../components/products/AddProductModal';
+import { ConfirmDialog } from '../components/ui/ConfirmDialog';
 import { formatCurrency, CURRENCY_OPTIONS, type CurrencyCode } from '../utils/currency';
 
 type ProductsByStore = Record<number, { status: 'loading' | 'loaded' | 'error'; items: ProductView[] }>;
@@ -20,7 +21,8 @@ export default function ProductsPage() {
   const [stores, setStores] = useState<StoreView[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  // Было number | null (только один открытый магазин) — теперь набор id,
+  // раскрытие одного больше не закрывает остальные.
   const [openStoreIds, setOpenStoreIds] = useState<Set<number>>(new Set());
   const [productsByStore, setProductsByStore] = useState<ProductsByStore>({});
 
@@ -30,6 +32,7 @@ export default function ProductsPage() {
   const [savingStore, setSavingStore] = useState(false);
 
   const [addProductStoreId, setAddProductStoreId] = useState<number | null>(null);
+  const [deletingStore, setDeletingStore] = useState<StoreView | null>(null);
 
   async function loadStores() {
     if (!user) return;
@@ -165,6 +168,7 @@ export default function ProductsPage() {
               onToggle={() => toggleStore(store.id)}
               productsState={productsByStore[store.id]}
               onAddProduct={() => setAddProductStoreId(store.id)}
+              onDelete={() => setDeletingStore(store)}
               navigate={navigate}
             />
           ))}
@@ -178,6 +182,26 @@ export default function ProductsPage() {
           onCreated={() => loadProductsForStore(addProductStoreId, true)}
         />
       )}
+
+      {deletingStore && (
+        <ConfirmDialog
+          title={t('stores.deleteTitle')}
+          message={
+            (productsByStore[deletingStore.id]?.items.length ?? 0) > 0
+              ? t('stores.deleteMessageWithProducts', {
+                  name: deletingStore.name,
+                  count: productsByStore[deletingStore.id]?.items.length ?? 0,
+                })
+              : t('stores.deleteMessage', { name: deletingStore.name })
+          }
+          confirmLabel={t('stores.delete')}
+          onClose={() => setDeletingStore(null)}
+          onConfirm={async () => {
+            await storesService.delete(deletingStore.id);
+            await loadStores();
+          }}
+        />
+      )}
     </div>
   );
 }
@@ -188,6 +212,7 @@ function StoreAccordionItem({
   onToggle,
   productsState,
   onAddProduct,
+  onDelete,
   navigate,
 }: {
   store: StoreView;
@@ -195,25 +220,22 @@ function StoreAccordionItem({
   onToggle: () => void;
   productsState?: { status: 'loading' | 'loaded' | 'error'; items: ProductView[] };
   onAddProduct: () => void;
+  onDelete: () => void;
   navigate: (path: string) => void;
 }) {
   const { t } = useTranslation();
 
   return (
     <div className="overflow-hidden rounded-xl border border-border bg-card">
-      <button
-        type="button"
-        onClick={onToggle}
-        className="flex w-full items-center justify-between px-6 py-4 text-left"
-      >
-        <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 px-6 py-4">
+        <button type="button" onClick={onToggle} className="flex flex-1 items-center gap-3 text-left">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent-soft text-accent">
             <StoreIcon size={16} />
           </div>
           <div>
             <div className="flex items-center gap-2">
               <p className="font-medium text-text-primary">{store.name}</p>
-
+              {/* Валюта — нарочно приглушённая, не должна конкурировать с названием */}
               <span className="font-data text-xs text-text-muted">{store.currency}</span>
             </div>
             {productsState?.status === 'loaded' && (
@@ -222,12 +244,21 @@ function StoreAccordionItem({
               </p>
             )}
           </div>
-        </div>
-        <ChevronDown
-          size={18}
-          className={`text-text-muted transition-transform ${isOpen ? 'rotate-180' : ''}`}
-        />
-      </button>
+          <ChevronDown
+            size={18}
+            className={`ml-auto text-text-muted transition-transform ${isOpen ? 'rotate-180' : ''}`}
+          />
+        </button>
+        <button
+          type="button"
+          onClick={onDelete}
+          aria-label={t('stores.delete')}
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-text-muted
+            transition-colors hover:bg-danger/10 hover:text-danger"
+        >
+          <Trash2 size={15} />
+        </button>
+      </div>
 
       {isOpen && (
         <div className="border-t border-border">

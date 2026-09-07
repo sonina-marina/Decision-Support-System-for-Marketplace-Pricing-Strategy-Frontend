@@ -170,7 +170,7 @@ export default function CalculatorPage() {
     <div className="max-w-6xl">
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-text-primary">{t('calculator.title')}</h1>
-        <p className="mt-1 text-sm text-text-muted">{t('calculator.subtitle')}</p>
+        <p className="mt-1 text-sm text-text-muted whitespace-pre-line">{t('calculator.subtitle')}</p>
       </div>
 
       <div className="mb-6 flex flex-wrap items-end gap-3">
@@ -266,21 +266,40 @@ export default function CalculatorPage() {
           ) : metrics ? (
             <>
               <div className="mb-4 flex flex-col">
-                <ResultRow label={t('products.productPage.metricsFields.conversion')} value={`${(metrics.conversion * 100).toFixed(1)}%`} />
-                <ResultRow label={t('products.productPage.metricsFields.cac')} value={formatCurrency(metrics.cac, currency)} />
+                <ResultRow 
+                  label={t('products.productPage.metricsFields.conversion')}
+                  description={t('products.productPage.metricsShortDesc.conversion')}
+                  value={`${(metrics.conversion * 100).toFixed(1)}%`}
+                 />
+                <ResultRow 
+                  label={t('products.productPage.metricsFields.cac')} 
+                  description={t('products.productPage.metricsShortDesc.cac')}
+                  value={formatCurrency(metrics.cac, currency)} 
+                />
                 <ResultRow
                   label={t('products.productPage.metricsFields.requiredCpa')}
+                  description={t('products.productPage.metricsShortDesc.requiredCpa')}
                   value={formatCurrency(metrics.requiredCpa, currency)}
                 />
-                <ResultRow label={t('products.productPage.metricsFields.ltc')} value={formatCurrency(metrics.ltc, currency)} />
+                <ResultRow 
+                  label={t('products.productPage.metricsFields.ltc')} 
+                  description={t('products.productPage.metricsShortDesc.ltc')}
+                  value={formatCurrency(metrics.ltc, currency)} 
+                />
                 <ResultRow
                   label={t('products.productPage.metricsFields.cm')}
+                  description={t('products.productPage.metricsShortDesc.cm')}
                   value={formatCurrency(metrics.cm, currency)}
                   valueClassName={metrics.cm >= 0 ? 'text-success' : 'text-danger'}
                 />
-                <ResultRow label={t('products.productPage.metricsFields.ltv')} value={formatCurrency(metrics.ltv, currency)} />
+                <ResultRow 
+                  label={t('products.productPage.metricsFields.ltv')} 
+                  description={t('products.productPage.metricsShortDesc.ltv')}
+                  value={formatCurrency(metrics.ltv, currency)} 
+                />
                 <ResultRow
                   label={t('products.productPage.metricsFields.productRoi')}
+                  description={t('products.productPage.metricsShortDesc.productRoi')}
                   value={`${metrics.productRoi.toFixed(1)}%`}
                   valueClassName={metrics.productRoi >= 0 ? 'text-success' : 'text-danger'}
                 />
@@ -306,16 +325,21 @@ export default function CalculatorPage() {
 
 function ResultRow({
   label,
+  description,
   value,
   valueClassName = 'text-text-primary',
 }: {
   label: string;
+  description: string;
   value: string;
   valueClassName?: string;
 }) {
   return (
     <div className="flex items-center justify-between border-b border-border-subtle py-2 text-sm last:border-0">
-      <span className="text-text-muted">{label}</span>
+      <div className="min-w-0">
+        <p className="text-text-primary">{label}</p>
+        <p className="text-xs text-text-muted">{description}</p>
+      </div>
       <span className={`font-data ${valueClassName}`}>{value}</span>
     </div>
   );

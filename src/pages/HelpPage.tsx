@@ -1,13 +1,13 @@
 import { useTranslation } from 'react-i18next';
 
 const METRICS = [
-  { key: 'conversion', formula: 'targetActions / views' },
-  { key: 'cac', formula: 'adCosts / buyers' },
-  { key: 'requiredCpa', formula: 'adCosts / targetActions' },
-  { key: 'ltc', formula: 'cogs + издержки маркетплейса + логистика + возвраты + хранение/упаковка' },
-  { key: 'cm', formula: 'price − ltc' },
-  { key: 'ltv', formula: 'cm × sales / buyers' },
-  { key: 'productRoi', formula: '(cm / ltc) × 100%' },
+  { key: 'conversion', formula: 'Target Actions / Views' },
+  { key: 'cac', formula: 'Advertisement Costs / Buyers' },
+  { key: 'requiredCpa', formula: 'Advertisement Costs / Target Actions' },
+  { key: 'ltc', formula: 'COGS + Marketplace Fees + Logistis + Returns + Storage + Packaging' },
+  { key: 'cm', formula: 'Price − LTC' },
+  { key: 'ltv', formula: 'CM × Sales / Buyers' },
+  { key: 'productRoi', formula: '(CM / LTC) × 100%' },
 ] as const;
 
 export default function HelpPage() {

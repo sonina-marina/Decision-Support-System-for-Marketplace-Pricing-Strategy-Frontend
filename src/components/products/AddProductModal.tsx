@@ -165,9 +165,11 @@ export function AddProductModal({
           {numberField('price')}
           {numberField('cogs')}
           {numberField('commission')}
+            
+          <p className="col-span-1 text-xs text-text-muted mb-3 sm:col-span-3">{t('products.productForm.warning')}</p>
 
           {/* Разделитель между базовыми полями и данными для расчёта метрик */}
-          <div className="col-span-1 my-1 border-t border-border-subtle sm:col-span-3" />
+          <div className="col-span-1 my-1 border-t border-border-subtle sm:col-span-3 mb-3" />
 
           {/* Ряд 3 — прочие издержки */}
           {numberField('acquiring')}
