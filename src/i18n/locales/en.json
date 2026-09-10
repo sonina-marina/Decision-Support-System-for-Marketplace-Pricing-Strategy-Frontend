@@ -1,0 +1,324 @@
+{
+  "app": {
+    "name": "PriceLens"
+  },
+  "theme": {
+    "switchToLight": "Switch to light theme",
+    "switchToDark": "Switch to dark theme"
+  },
+  "language": {
+    "label": "Language"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "products": "Products",
+    "unitEconomics": "Calculator",
+    "scenarios": "Scenarios",
+    "reports": "Reports",
+    "signOut": "Sign out",
+    "help": "Help"
+  },
+  "role": {
+    "seller": "Seller",
+    "administrator": "Administrator"
+  },
+  "auth": {
+    "eyebrow": "Decision support system",
+    "heroLine1": "Price with",
+    "heroLine2": "confidence.",
+    "heroSubtitle": "Model pricing scenarios, calculate unit economics, and spot hidden leaks and vulnerabilities",
+    "stats": {
+      "marginLift": "Avg margin lift\nafter scenario modeling",
+      "productsTracked": "Products tracked\nacross all sellers",
+      "calcsPerSession": "Calc per session\naverage per user",
+      "riskFlags": "Risk flags caught\nbefore listing"
+    },
+    "signIn": {
+      "title": "Sign in",
+      "subtitle": "Enter your credentials to continue",
+      "emailLabel": "Email address",
+      "emailPlaceholder": "you@company.com",
+      "passwordLabel": "Password",
+      "submit": "Sign in",
+      "noAccount": "Don't have an account?",
+      "createAccount": "Create one"
+    },
+    "signUp": {
+      "title": "Create account",
+      "subtitle": "Start pricing with confidence in minutes",
+      "nameLabel": "Full name",
+      "emailLabel": "Email address",
+      "emailPlaceholder": "you@company.com",
+      "passwordLabel": "Password",
+      "confirmPasswordLabel": "Confirm password",
+      "submit": "Create account",
+      "haveAccount": "Already have an account?",
+      "signIn": "Sign in"
+    },
+    "errors": {
+      "required": "This field is required",
+      "invalidEmail": "Enter a valid email address",
+      "passwordTooShort": "Password must be at least 8 characters",
+      "passwordMismatch": "Passwords don't match"
+    }
+  },
+  "products": {
+    "title": "Products",
+    "shownCount": "{{shown}} of {{total}} shown",
+    "addProduct": "Add Product",
+    "searchPlaceholder": "Search by name or SKU...",
+    "filters": {
+      "all": "All",
+      "active": "Active",
+      "archived": "Archived"
+    },
+    "table": {
+      "product": "Product",
+      "price": "Price",
+      "cogs": "COGS",
+      "commission": "Commission",
+      "advertising": "Adv.",
+      "margin": "Margin",
+      "netProfit": "Net Profit",
+      "breakEven": "Break-even"
+    },
+    "empty": {
+      "title": "No products yet",
+      "subtitle": "Add your first product to start modeling margins.",
+      "cta": "Add Product"
+    },
+    "productForm": {
+      "createTitle": "Add Product",
+      "editTitle": "Edit Product",
+      "name": "Name",
+      "category": "Category",
+      "itemNumber": "Item Number",
+      "price": "Price",
+      "cogs": "Сost of Goods Sold",
+      "commission": "Commission (%)",
+      "warning": "The fields below are optional for creating the product but required for calculating metrics",
+      "acquiring": "Acquire (%)",
+      "tax": "Tax (%)",
+      "views": "Views",
+      "targetActions": "Target Actions",
+      "buyers": "Byers",
+      "adCosts": "Advertisment Costs",
+      "inboundLogistic": "Inbound Logistic",
+      "directLogistic": "Direct Logistic",
+      "reverseLogistic": "Reverse Logistic",
+      "returnRate": "Return Rate (%)",
+      "defectRate": "Defect Rate (%)",
+      "avgStorage": "Average Cost of Storage",
+      "avgPackaging": "Average Cost of Packeging",
+      "sales": "Sales",
+      "creationError": "The product could not be created. Check the words and try again.",
+      "showAdvanced": "Show remaining fields (for metrics calculation)",
+      "hideAdvanced": "Hide remaining fields"
+    },
+    "productPage": {
+      "back": "Back to Products",
+      "edit": "Edit",
+      "delete": "Delete",
+      "deleteTitle": "Delete product",
+      "deleteMessage": "Delete \"{{name}}\"? This action cannot be undone.",
+      "metrics": "Metrics",
+      "metricsTooltip": "You can view all the metrics in the Help tab",
+      "calculate": "Calculate metrics",
+      "missingFieldsHint": "Fill in the fields",
+      "noMetrics": "No metrics calculated yet",
+      "history": "Calculation history",
+      "loadError": "Failed to load product",
+      "calculateError": "Failed to calculate metrics",
+      "metricsFields": {
+        "conversion": "Conversion",
+        "cac": "CAC",
+        "requiredCpa": "CPA",
+        "ltc": "LTC",
+        "cm": "CM",
+        "ltv": "LTV",
+        "productRoi": "ROI"
+      },
+      "section": {
+        "pricing": "Pricing",   
+        "funnel": "Funnel & Ads",   
+        "logistics": "Logistics & Returns"  
+      },
+      "metricsShortDesc": {
+        "conversion": "Conversion rate",
+        "cac": "Customer acquisition cost",
+        "requiredCpa": "Cost per action",
+        "ltc": "Cost per unit",
+        "cm": "Contribution margin",
+        "ltv": "Lifetime value",
+        "productRoi": "Return on investment per unit"
+      },
+      "status": {
+        "below": "Below normal",
+        "normal": "Normal",
+        "above": "Above normal"
+      }
+    }
+  },
+  "common": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "loading": "Loading...",
+    "back": "Back",
+    "deleteError": "Failed to delete"
+  },
+  "titles": {
+    "dashboard": "",
+    "products": "Products",
+    "product": "Product Information",
+    "unit_economics": "Unit Economics Calculator",
+    "scenarios": "Scenarios",
+    "reports": "Reports",
+    "not_found": "Page Not Found"
+  },
+  "stores": {
+    "title": "Stores & Products",
+    "addStore": "Add Store",
+    "newStoreNamePlaceholder": "Store name",
+    "create": "Create",
+    "productsCount": "{{count}} products",
+    "empty": {
+      "title": "No stores yet",
+      "subtitle": "Create your first store to start adding products.",
+      "cta": "Create Store"
+    },
+    "loadError": "Failed to load stores",
+    "table": {
+      "itemNumber": "Item #",
+      "name": "Name",
+      "category": "Category",
+      "price": "Price"
+    },
+    "addProduct": "Add Product",
+    "noProducts": "No products in this store yet",
+    "delete": "Delete store",
+    "deleteTitle": "Delete store",
+    "deleteMessage": "Delete \"{{name}}\"? This action cannot be undone.",
+    "deleteMessageWithProducts": "\"{{name}}\" has {{count}} product(s). Delete the store anyway?"
+  },
+  "calculator": {
+    "title": "Unit Economics Calculator",
+    "subtitle": "Select an existing product or enter new data. The product and any changes made to it will not be saved to the database.\nYou can use this calculator to see in real time how unit economics metrics change based on the entered data.",
+    "loadFrom": "Load from product",
+    "customOption": "Custom (not saved)",
+    "currency": "Currency",
+    "result": "Result",
+    "hints": {
+      "unprofitable": "Product is unprofitable - margin is negative",
+      "lowMargin": "Low profitability (ROI under 15%)",
+      "adCostsTooHigh": "Ad costs per buyer exceed the margin per sale",
+      "operationalCostsHigh": "Operational costs make up over 85% of the price"
+    }
+  },
+  "help": {
+    "title": "Help",
+    "intro": "How PriceLens works and what the metrics mean.",
+    "howItWorksTitle": "How the App Works",
+    "howItWorksBody": "Marketplace sellers usually see only basic stats-views, orders. This isn't enough to understand if a specific product makes real money after all expenses: marketplace fees, logistics, ads, returns. PriceLens calculates this for you. You enter product data-price, cost of goods sold (COGS), buyer acquisition costs-and the system shows if the product is profitable at the single unit level. This is unit economics: if one unit generates a profit, your entire business is likely profitable. If it's unprofitable, it's a signal to review your price, costs, or marketing strategy before the issue hits your overall revenue.",
+    "metricsTitle": "Metric Descriptions",
+    "metrics": {
+      "conversion": "The percentage of product listing visitors who completed a target action (click, add to cart, or order). A low value is a sign to check listing design, pricing relevance, and ad spend.",
+      "cac": "The average cost to acquire one paying customer. High CAC means you should review your marketing strategy; low CAC means you can scale up advertising without risking your economics.",
+      "requiredCpa": "The cost per target action-not necessarily a purchase, but the initial interest from a potential customer. High CPA with low CAC usually means ads are targeting the wrong audience.",
+      "ltc": "Total variable costs to sell one product: cost of goods sold (COGS), marketplace fees, payment processing, taxes, logistics, expected losses from returns/defects, storage, and packaging.",
+      "cm": "The profit from one unit sold after deducting all direct variable costs (excluding advertising). High sales volume won't save you if CM is negative-this metric shows real product profitability, not just turnover.",
+      "ltv": "The average lifetime profit generated by a single customer at current sales volumes. Compare this to CAC: if LTV is significantly lower than CAC, customer acquisition is not paying off.",
+      "productRoi": "Return on investment for product expenses-how much profit each unit of invested money generates. Helps decide which product is more profitable to promote, even if multiple items yield the same dollar CM."
+    },
+    "metricStatus": {
+    "notFound": "Explanation for this status is not available yet.",
+    "backToHelp": "View other metrics",
+    "section": {
+      "whatItMeans": "What it means",
+      "whyItHappens": "Why it happens",
+      "whatToDo": "What you can do"
+    },
+    "cm_below": {
+      "title": "CM is below normal",
+      "subtitle": "The item is selling at a loss on a per-unit level",
+      "whatItMeans": "Contribution Margin (CM) is negative-the item's price does not cover even the direct variable costs of selling it: cost of goods sold (COGS), marketplace commission, logistics, and expected losses from returns or defects. Every unit sold reduces business profit, even before accounting for advertising expenses.",
+      "whyItHappens": "Typically, this is due to one or more factors: the price is set below the actual unit economic cost, marketplace commissions or logistics rates increased without a price recalculation, or the return/defect rate turned out higher than initially estimated.",
+      "whatToDo": "Recalculate your COGS including all shipping and storage costs. Raise the price to a level where CM becomes positive, or lower your cost structure-for example, negotiate better logistics terms or reduce the defect rate by improving packaging."
+    },
+    "ltv_below": {
+      "title": "LTV is below normal",
+      "subtitle": "LTV to CAC ratio is less than 1-customer acquisition is not profitable",
+      "whatItMeans": "The lifetime value of a customer (LTV) is lower than their customer acquisition cost (CAC). Every new customer costs more to acquire than they bring in revenue-this directly leads to a cash flow gap, even if total revenue is growing.",
+      "whyItHappens": "Most often, this happens due to excessive advertising spend relative to the product's profit margin, low conversion rates from ads to actual purchases, or because the product margin itself is too narrow to sustain active customer acquisition.",
+      "whatToDo": "Reduce acquisition costs by reviewing your ad channels and targeting settings. Increase the product margin (see CM recommendations), or temporarily limit your advertising budget until the unit economics improve."
+  },
+    "ltv_above": {
+      "title": "LTV is above normal",
+      "subtitle": "LTV to CAC ratio is greater than 5",
+      "whatItMeans": "The lifetime value of a customer significantly exceeds their acquisition cost. Formally this is a great result, but such a wide gap usually indicates missed growth opportunities rather than just perfect economics.",
+      "whyItHappens": "Generally, this means you are investing less in advertising than the product's economics allow-either due to low competition in your niche, conservative budgeting, or because the ads are failing to scale for other reasons.",
+      "whatToDo": "Consider increasing your advertising budget, as the product can justify significantly higher investment than it currently receives. Check if you are hitting ad campaign caps or audience reach limits, and gradually scale up promotion while monitoring changes in the LTV:CAC ratio."
+    }
+  }
+  },
+  "scenarios": {
+    "title": "Scenarios",
+    "subtitle": "Compare two pricing variants side by side - nothing is saved",
+    "variantA": "Variant A",
+    "variantB": "Variant B",
+    "duplicateFromA": "Copy from A",
+    "comparison": "Comparison",
+    "needBothVariants": "Fill in both variants to see the comparison",
+    "delta": "Difference"
+  },
+  "reports": { 
+    "subtitle": "Generate product reports and analyze their latest calculated metrics.", 
+    "selectStores": "Stores", 
+    "selectStoresHint": "Select the stores whose products you want to include in the report.", 
+    "selectAll": "Select all", 
+    "clear": "Clear", 
+    "noStores": "You don't have any stores yet.", 
+    "noStoresSelected": "No stores selected", 
+    "products": "products",  
+    "preview": "Report preview", 
+    "loadingProducts": "Loading product data and metrics...", 
+    "noProducts": "Please select at least one store with products.",  
+    "exportExcel": "Export to Excel", 
+    "exporting": "Generating report...",  
+    "excel": { 
+      "storeName": "Store name:", 
+      "productsCount": "Products:" 
+    },  
+    "columns": { 
+      "itemNumber": "Item Number", 
+      "store": "Store", 
+      "name": "Product name", 
+      "category": "Category", 
+      "price": "Price", 
+      "cogs": "COGS", 
+      "sales": "Sales volume", 
+      "buyers": "Number of buyers", 
+      "views": "Product page views", 
+      "targetActions": "Target actions", 
+      "adCosts": "Ad spend", 
+      "commission": "Marketplace commission", 
+      "logistics": "Logistics costs", 
+      "tax": "Taxes", 
+      "stock": "Stock level", 
+      "acquiring": "Acquiring", 
+      "inboundLogistic": "Inbound logistics", 
+      "directLogistic": "Shipping to warehouse", 
+      "avgPackaging": "Packaging & labeling", 
+      "avgStorage": "Storage", 
+      "reverseLogistic": "Reverse logistics", 
+      "returns": "Number of returns", 
+      "defectRate": "Defect rate",  
+      "conversion": "Conversion", 
+      "cac": "CAC", 
+      "cpa": "CPA", 
+      "ltc": "LTC", 
+      "cm": "CM", 
+      "ltv": "LTV", 
+      "roi": "ROI" 
+    } 
+  }
+}
