@@ -61,6 +61,7 @@ Saving a calculation to the database (so it shows up in a product's history) is 
 ## Setup Guide
 
 ```bash
+git clone https://github.com/sonina-marina/Decision-Support-System-for-Marketplace-Pricing-Strategy-Frontend
 cd dss_frontend
 npm install
 npm run dev
